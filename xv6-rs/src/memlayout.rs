@@ -1,6 +1,7 @@
 // Memory layout
 
-#![allow(non_snake_case)]
+#![allow(non_snake_case,
+         unused_imports)]
 
 use defs::*;
 
@@ -12,24 +13,20 @@ pub const DEVSPACE: usize = 0xFE000000; // Other devices are at high addresses
 pub const KERNBASE: usize = 0x80000000;          // First kernel virtual address
 pub const KERNLINK: usize = (KERNBASE + EXTMEM); // Address where kernel is linked
 
-#[inline(always)]
-pub fn V2P(a: *mut void) -> usize {
-    return (a as usize) - KERNBASE;
+macro_rules! V2P {
+    ($e:expr) => (($e as usize) - KERNBASE);
 }
 
-#[inline(always)]
-pub fn P2V(a: usize) -> *mut void {
-    return (a + KERNBASE) as *mut void;
+macro_rules! P2V {
+    ($e:expr) => (($e + KERNBASE) as *mut void);
 }
 
 // same as V2P, but without casts
-#[inline(always)]
-pub fn V2P_WO(a: usize) -> usize {
-    return a - KERNBASE;
+macro_rules! V2P_WO {
+    ($e:expr) => ($e - KERNBASE);
 }
 
 // same as P2V, but without casts
-#[inline(always)]
-pub fn P2V_WO(a: usize) -> usize {
-    return a + KERNBASE;
+macro_rules! P2V_WO {
+    ($e:expr) => ($e + KERNBASE);
 }
