@@ -1,10 +1,14 @@
+#![feature(asm)]
 #![feature(lang_items)]
 #![no_std]
 
 extern crate rlibc;
 
 pub mod defs;
+#[macro_use]
 pub mod memlayout;
+pub mod x86;
+pub mod console;
 pub mod main_;
 
 #[cfg(not(test))]

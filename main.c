@@ -10,17 +10,8 @@
 
 void startothers(void);
 void mpmain(void)  __attribute__((noreturn));
+extern void mpenter(void);
 extern pde_t *kpgdir;
-
-// Other CPUs jump here from entryother.S.
-static void
-mpenter(void)
-{
-  switchkvm();
-  seginit();
-  lapicinit();
-  mpmain();
-}
 
 // Common CPU setup code.
 void

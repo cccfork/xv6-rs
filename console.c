@@ -17,39 +17,16 @@
 #include "proc.h"
 #include "x86.h"
 
-static void consputc(int);
+extern void consputc(int);
 
-static int panicked = 0;
+int panicked = 0;
 
 static struct {
   struct spinlock lock;
   int locking;
 } cons;
 
-static void
-printint(int xx, int base, int sign)
-{
-  static char digits[] = "0123456789abcdef";
-  char buf[16];
-  int i;
-  uint x;
-
-  if(sign && (sign = xx < 0))
-    x = -xx;
-  else
-    x = xx;
-
-  i = 0;
-  do{
-    buf[i++] = digits[x % base];
-  }while((x /= base) != 0);
-
-  if(sign)
-    buf[i++] = '-';
-
-  while(--i >= 0)
-    consputc(buf[i]);
-}
+extern void printint(int xx, int base, int sign);
 //PAGEBREAK: 50
 
 // Print to the console. only understands %d, %x, %p, %s.
@@ -134,7 +111,7 @@ panic(char *s)
 #define CRTPORT 0x3d4
 static ushort *crt = (ushort*)P2V(0xb8000);  // CGA memory
 
-static void
+void
 cgaputc(int c)
 {
   int pos;
@@ -166,22 +143,6 @@ cgaputc(int c)
   outb(CRTPORT, 15);
   outb(CRTPORT+1, pos);
   crt[pos] = ' ' | 0x0700;
-}
-
-void
-consputc(int c)
-{
-  if(panicked){
-    cli();
-    for(;;)
-      ;
-  }
-
-  if(c == BACKSPACE){
-    uartputc('\b'); uartputc(' '); uartputc('\b');
-  } else
-    uartputc(c);
-  cgaputc(c);
 }
 
 #define INPUT_BUF 128
