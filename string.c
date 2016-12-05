@@ -103,3 +103,14 @@ strlen(const char *s)
   return n;
 }
 
+const char *
+strrchr(const char *s, char c)
+{
+  const char *ret = s;
+
+  for (; *s; ++s) {
+    if (*s == c)
+      ret = s +1;
+  }
+  return ret;
+}

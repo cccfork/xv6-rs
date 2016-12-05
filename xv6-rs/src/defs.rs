@@ -4,6 +4,8 @@
          non_upper_case_globals,
          non_snake_case)]
 
+use elf;
+
 pub enum void { }
 pub type pde_t = u32;
 pub enum buf { }
@@ -36,6 +38,7 @@ extern "C" {
     pub fn exec(arg1: *mut char,
                 arg2: *mut *mut char)
      -> i32;
+    pub fn exec_init(name: *const char, pgdir: *mut pde_t, sz: usize, elf: *const elf::elfhdr, sp: usize);
     pub fn filealloc() -> *mut file;
     pub fn fileclose(arg1: *mut file);
     pub fn filedup(arg1: *mut file) -> *mut file;
@@ -62,11 +65,11 @@ extern "C" {
     pub fn namecmp(arg1: *const char,
                    arg2: *const char)
      -> i32;
-    pub fn namei(arg1: *mut char) -> *mut inode;
+    pub fn namei(arg1: *const char) -> *mut inode;
     pub fn nameiparent(arg1: *mut char,
                        arg2: *mut char) -> *mut inode;
-    pub fn readi(arg1: *mut inode, arg2: *mut char,
-                 arg3: u32, arg4: u32) -> i32;
+    pub fn readi(arg1: *const inode, arg2: *mut char,
+                 arg3: usize, arg4: usize) -> usize;
     pub fn stati(arg1: *mut inode, arg2: *mut stat);
     pub fn writei(arg1: *mut inode, arg2: *mut char,
                   arg3: u32, arg4: u32) -> i32;
@@ -144,7 +147,9 @@ extern "C" {
                       arg3: i32)
      -> *mut char;
     pub fn strlen(arg1: *const char)
-     -> i32;
+     -> usize;
+    pub fn strrchr(arg1: *const char, arg2: char)
+     -> *const char;
     pub fn strncmp(arg1: *const char,
                    arg2: *const char, arg3: u32)
      -> i32;
@@ -176,21 +181,21 @@ extern "C" {
     pub fn setupkvm() -> *mut pde_t;
     pub fn uva2ka(arg1: *mut pde_t, arg2: *mut char)
      -> *mut char;
-    pub fn allocuvm(arg1: *mut pde_t, arg2: u32, arg3: u32)
-     -> i32;
-    pub fn deallocuvm(arg1: *mut pde_t, arg2: u32, arg3: u32)
-     -> i32;
+    pub fn allocuvm(arg1: *mut pde_t, arg2: usize, arg3: usize)
+     -> usize;
+    pub fn deallocuvm(arg1: *mut pde_t, arg2: usize, arg3: usize)
+     -> isize;
     pub fn freevm(arg1: *mut pde_t);
     pub fn inituvm(arg1: *mut pde_t, arg2: *mut char,
                    arg3: u32);
     pub fn loaduvm(arg1: *mut pde_t, arg2: *mut char,
-                   arg3: *mut inode, arg4: u32, arg5: u32)
+                   arg3: *mut inode, arg4: usize, arg5: usize)
      -> i32;
     pub fn copyuvm(arg1: *mut pde_t, arg2: u32) -> *mut pde_t;
     pub fn switchuvm(arg1: *mut proc_);
     pub fn switchkvm();
-    pub fn copyout(arg1: *mut pde_t, arg2: u32,
-                   arg3: *mut void, arg4: u32)
+    pub fn copyout(arg1: *mut pde_t, arg2: usize,
+                   arg3: *const void, arg4: usize)
      -> i32;
     pub fn clearpteu(pgdir: *mut pde_t, uva: *mut char);
 }

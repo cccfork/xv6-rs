@@ -6,15 +6,20 @@
 extern crate rlibc;
 
 pub mod defs;
+pub mod param;
 #[macro_use]
 pub mod memlayout;
 pub mod x86;
+pub mod mmu;
 pub mod elf;
 pub mod bootmain;
 pub mod traps;
 pub mod uart;
 pub mod console;
 pub mod main_;
+pub mod log;
+pub mod fs;
+pub mod exec;
 
 #[cfg(not(test))]
 #[lang = "eh_personality"]

@@ -51,12 +51,12 @@ impl ::core::default::Default for proghdr {
 }
 
 // Values for Proghdr type
-const ELF_PROG_LOAD: usize =      1;
+pub const ELF_PROG_LOAD: usize =      1;
 
 // Flag bits for Proghdr flags
-const ELF_PROG_FLAG_EXEC: usize =  1;
-const ELF_PROG_FLAG_WRITE: usize = 2;
-const ELF_PROG_FLAG_READ: usize =  4;
+pub const ELF_PROG_FLAG_EXEC: usize =  1;
+pub const ELF_PROG_FLAG_WRITE: usize = 2;
+pub const ELF_PROG_FLAG_READ: usize =  4;
 
 //PAGEBREAK!
 // Blank page.
