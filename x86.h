@@ -105,7 +105,11 @@ loadgs(ushort v)
   asm volatile("movw %0, %%gs" : : "r" (v));
 }
 
-extern void cli(void);
+static inline void
+cli(void)
+{
+  asm volatile("cli");
+}
 
 static inline void
 sti(void)
