@@ -2,14 +2,14 @@
 
 use defs::*;
 use memlayout::*;
-use x86::*;
+use x86;
+use uart;
 
 // Console input and output.
 // Input is from the keyboard or serial port.
 // Output is written to the screen and serial port.
 
 extern "C" {
-    pub fn uartputc(c: isize);
     pub fn cgaputc(c: isize);
 
     pub static panicked: isize;
@@ -52,16 +52,16 @@ const CRT: *mut u16 = P2V!(0xb8000) as *mut u16;  // CGA memory
 pub extern "C" fn consputc(c: isize) {
     unsafe {
         if panicked != 0 {
-            cli();
+            x86::cli();
             loop {}
         }
 
         if c == BACKSPACE {
-            uartputc('\x08' as isize);
-            uartputc(' ' as isize);
-            uartputc('\x08' as isize);
+            uart::uartputc('\x08' as isize);
+            uart::uartputc(' ' as isize);
+            uart::uartputc('\x08' as isize);
         } else {
-            uartputc(c);
+            uart::uartputc(c);
         }
         cgaputc(c);
     }
