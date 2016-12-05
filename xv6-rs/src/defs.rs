@@ -31,10 +31,7 @@ extern "C" {
     pub fn bwrite(arg1: *mut buf);
     pub fn consoleinit();
     pub fn cprintf(arg1: *const char, ...);
-    pub fn consoleintr(arg1:
-                           ::core::option::Option<extern "C" fn()
-                                                      ->
-                                                          i32>);
+    pub fn consoleintr(getc: unsafe extern "C" fn () -> isize);
     pub fn panic(arg1: *mut char);
     pub fn exec(arg1: *mut char,
                 arg2: *mut *mut char)

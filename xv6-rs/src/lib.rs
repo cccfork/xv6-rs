@@ -11,6 +11,8 @@ pub mod memlayout;
 pub mod x86;
 pub mod elf;
 pub mod bootmain;
+pub mod traps;
+pub mod uart;
 pub mod console;
 pub mod main_;
 

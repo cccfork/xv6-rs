@@ -162,9 +162,9 @@ void            tvinit(void);
 extern struct spinlock tickslock;
 
 // uart.c
-void            uartinit(void);
-void            uartintr(void);
-void            uartputc(int);
+extern void     uartinit(void);
+extern void     uartintr(void);
+extern void     uartputc(int);
 
 // vm.c
 void            seginit(void);
