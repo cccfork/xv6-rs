@@ -82,7 +82,9 @@ ASFLAGS = -m32 -gdwarf-2 -Wa,-divide -no-integrated-as
 # FreeBSD ld wants ``elf_i386_fbsd''
 LDFLAGS += -m $(shell $(LD) -V | grep elf_i386 2>/dev/null | head -n 1)
 
-RUSTOBJ = xv6-rs/target/debug/libxv6.a
+RUSTOBJ_DEBUG = xv6-rs/target/debug/libxv6.a
+RUSTOBJ_RELEASE = xv6-rs/target/release/libxv6.a
+RUSTOBJ = $(RUSTOBJ_DEBUG)
 
 xv6.img: bootblock kernel fs.img
 	dd if=/dev/zero of=xv6.img count=10000
@@ -94,10 +96,9 @@ xv6memfs.img: bootblock kernelmemfs
 	dd if=bootblock of=xv6memfs.img conv=notrunc
 	dd if=kernelmemfs of=xv6memfs.img seek=1 conv=notrunc
 
-bootblock: bootasm.S bootmain.c
-	$(CC) $(CFLAGS) -fno-pic -O -nostdinc -I. -c bootmain.c
+bootblock: bootasm.S $(RUSTOBJ_RELEASE)
 	$(CC) $(CFLAGS) -fno-pic -nostdinc -I. -c bootasm.S
-	$(LD) $(LDFLAGS) -N -e start -Ttext 0x7C00 -o bootblock.o bootasm.o bootmain.o
+	$(LD) $(LDFLAGS) -N -e start -Ttext 0x7C00 -o bootblock.o --gc-sections bootasm.o $(RUSTOBJ_RELEASE)
 	$(OBJDUMP) -S bootblock.o > bootblock.asm
 	$(OBJCOPY) -S -O binary -j .text bootblock.o bootblock
 	./sign.pl bootblock
@@ -114,10 +115,11 @@ initcode: initcode.S
 	$(OBJCOPY) -S -O binary initcode.out initcode
 	$(OBJDUMP) -S initcode.o > initcode.asm
 
-cargo:
+$(RUSTOBJ_DEBUG):
 	@cargo build --manifest-path xv6-rs/Cargo.toml
 
-$(RUSTOBJ): cargo
+$(RUSTOBJ_RELEASE):
+	@cargo build --release --manifest-path xv6-rs/Cargo.toml
 
 kernel: $(OBJS) $(RUSTOBJ) entry.o entryother initcode kernel.ld
 	$(LD) $(LDFLAGS) -T kernel.ld -o kernel --gc-sections entry.o $(OBJS) $(RUSTOBJ) -b binary initcode entryother

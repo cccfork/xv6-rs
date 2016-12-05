@@ -1,5 +1,6 @@
 #![feature(asm)]
 #![feature(lang_items)]
+#![feature(step_by)]
 #![no_std]
 
 extern crate rlibc;
@@ -8,6 +9,8 @@ pub mod defs;
 #[macro_use]
 pub mod memlayout;
 pub mod x86;
+pub mod elf;
+pub mod bootmain;
 pub mod console;
 pub mod main_;
 
