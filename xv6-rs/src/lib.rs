@@ -23,6 +23,7 @@ extern "C" fn eh_personality() {
 
 #[cfg(not(test))]
 #[lang = "panic_fmt"]
+#[no_mangle]
 extern "C" fn panic_fmt() -> ! {
     loop {}
 }
